@@ -2,6 +2,12 @@
 
 a vue form validate component library
 
+## install
+
+```bash
+npm install validate-component-vue@latest
+```
+
 ## How to use
 
 ```typescript
