@@ -1,18 +1,74 @@
-# Vue 3 + TypeScript + Vite
+# validate-component-vue
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+a vue form validate component library
 
-## Recommended IDE Setup
+## How to use
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+```typescript
+import { createApp } from "vue";
+import ValidateComponent from "validate-component-vue";
+import App from "./App.vue";
 
-## Type Support For `.vue` Imports in TS
+createApp(App).use(ValidateComponent).mount("#app");
+```
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+```vue
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+const formRef = ref();
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+const model = reactive({
+  name: "",
+  sex: "",
+});
+
+const rules = {
+  name: [
+    {
+      required: true,
+      message: "name not be empty",
+    },
+  ],
+  sex: [
+    {
+      required: true,
+      message: "sex not be empty",
+    },
+  ],
+};
+
+function validate() {
+  formRef.value
+    .validate()
+    .then((res) => {
+      // success handle
+      console.log(res);
+    })
+    .catch((res) => {
+      // error handle
+      console.log("error", res);
+    });
+}
+</script>
+
+<template>
+  <validate-form ref="formRef" :model="model" :rules="rules">
+    <validate-form-item name="name" component="div" class="form-item">
+      <template #default="{ validate }">
+        <input type="text" v-model="model.name" />
+        <span v-if="validate.hasError">{{ validate.errors[0].message }}</span>
+      </template>
+    </validate-form-item>
+    <validate-form-item name="sex" component="div" class="form-item">
+      <template #default="{ validate }">
+        <input type="text" v-model="model.sex" />
+        <span v-if="validate.hasError">{{ validate.errors[0].message }}</span>
+      </template>
+    </validate-form-item>
+  </validate-form>
+  <button @click="validate">validate</button>
+</template>
+```
+
+rule options see [async-validator](https://github.com/yiminghe/async-validator)
