@@ -1,6 +1,6 @@
 {
   "name": "validate-component-vue",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "a vue form validate component library",
   "repository": {
